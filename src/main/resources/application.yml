@@ -14,5 +14,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
     show-sql: true
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
