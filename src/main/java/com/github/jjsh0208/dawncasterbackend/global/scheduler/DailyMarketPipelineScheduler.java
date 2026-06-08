@@ -1,6 +1,7 @@
 package com.github.jjsh0208.dawncasterbackend.global.scheduler;
 
 import com.github.jjsh0208.dawncasterbackend.domain.news.service.NewsService;
+import com.github.jjsh0208.dawncasterbackend.domain.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class DailyMarketPipelineScheduler {
 
     private final NewsService newsService;
+    private final StockService stockService;
 
     /**
      * 일일 시장 데이터 파이프라인 가동
@@ -21,7 +23,11 @@ public class DailyMarketPipelineScheduler {
     public void executeDailyPipeline() {
         try{
 
-            log.info(">> Step 1. Finnhub 뉴스 데이터 수집 시작");
+            log.info(">> Step 1. Finnhub 미국 3대 증시 데이터 수집 시작");
+            stockService.saveDailyMarketSummary();
+            log.info(">> Step 1. Finnhub 미국 3대 증시 데이터 수집 시작");
+
+            log.info(">> Step 2. Finnhub 뉴스 데이터 수집 시작");
             newsService.ingestDailyNews();
             log.info(">> Step 2. Finnhub 뉴스 데이터 수집 완료");
 
