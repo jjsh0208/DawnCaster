@@ -37,7 +37,7 @@ public class NewsService {
 
                 for (FinnhubNewsResponse res : apiResponses) {
                     // 2. 중복 수집 방지 (URL 멱등성 검증)
-                    if (newsRepository.existsByUrl(res.getUrl())) {
+                    if (newsRepository.existsByUrlAndCategory(res.getUrl(), category)) {
                         continue;
                     }
 
