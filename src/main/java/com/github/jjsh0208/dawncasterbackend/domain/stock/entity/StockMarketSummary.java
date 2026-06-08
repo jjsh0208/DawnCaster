@@ -3,6 +3,7 @@ package com.github.jjsh0208.dawncasterbackend.domain.stock.entity;
 import com.github.jjsh0208.dawncasterbackend.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,12 @@ public class StockMarketSummary extends BaseTimeEntity {
 
     @Column(name = "change_rate", precision = 8, scale = 2)
     private BigDecimal changeRate; // 전일 대비 등락률 (%)
+
+    @Builder
+    public StockMarketSummary(LocalDate marketDate, String indexName, BigDecimal closePrice, BigDecimal changeRate) {
+        this.marketDate = marketDate;
+        this.indexName = indexName;
+        this.closePrice = closePrice;
+        this.changeRate = changeRate;
+    }
 }
