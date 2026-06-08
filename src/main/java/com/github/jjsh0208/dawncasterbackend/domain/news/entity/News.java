@@ -4,6 +4,7 @@ import com.github.jjsh0208.dawncasterbackend.domain.category.entity.Category;
 import com.github.jjsh0208.dawncasterbackend.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,4 +38,15 @@ public class News extends BaseTimeEntity {
 
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
+
+
+    @Builder
+    public News(Category category, String title, String content, String url, String source, LocalDateTime publishedAt) {
+        this.category = category;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+        this.source = source;
+        this.publishedAt = publishedAt;
+    }
 }
