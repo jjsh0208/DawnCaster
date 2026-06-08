@@ -1,7 +1,7 @@
 package com.github.jjsh0208.dawncasterbackend.domain.stock.service;
 
 import com.github.jjsh0208.dawncasterbackend.global.infrastructure.finnhub.dto.MarketIndexResponse;
-import com.github.jjsh0208.dawncasterbackend.global.infrastructure.finnhub.service.FinnhubService;
+import com.github.jjsh0208.dawncasterbackend.global.infrastructure.finnhub.client.FinnhubClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockService {
 
-    private final FinnhubService finnhubService;
+    private final FinnhubClient finnhubClient;
 
     /** 3대 증시 심볼
      *  SPY , QQQ , DIA
@@ -20,15 +20,15 @@ public class StockService {
         return List.of(
                 new MarketIndexResponse(
                         "S&P 500",
-                        finnhubService.getQuote("SPY")
+                        finnhubClient.getQuote("SPY")
                 ),
                 new MarketIndexResponse(
                         "NASDAQ",
-                        finnhubService.getQuote("QQQ")
+                        finnhubClient.getQuote("QQQ")
                 ),
                 new MarketIndexResponse(
                         "DOW JONES",
-                        finnhubService.getQuote("DIA")
+                        finnhubClient.getQuote("DIA")
                 )
         );
     }
