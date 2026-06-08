@@ -6,10 +6,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: dawncaster
-      MYSQL_USER: jjsh0208
-      MYSQL_PASSWORD: 'Gusdk5540!'
-      MYSQL_ROOT_PASSWORD: 'Gusdk5540!'
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       TZ: Asia/Seoul
     volumes:
       - dawncaster_data:/var/lib/mysql
