@@ -1,14 +1,12 @@
 package com.github.jjsh0208.dawncasterbackend.domain.ai.entity;
 
-import com.github.jjsh0208.dawncasterbackend.domain.category.entity.Category;
 import com.github.jjsh0208.dawncasterbackend.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,15 @@ public class AiAnalysis extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "aiAnalysis", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AiAnalysisImpact> impacts = new ArrayList<>();
+
+    @Builder
+    public AiAnalysis(Long categoryId, LocalDate analysisDate, String issueTitle, String summary){
+        this.categoryId = categoryId;
+        this.analysisDate = analysisDate;
+        this.issueTitle = issueTitle;
+        this.summary = summary;
+    }
+
 
     public void addImpact(AiAnalysisImpact impact) {
         this.impacts.add(impact);
