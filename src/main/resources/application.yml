@@ -24,7 +24,8 @@ spring:
           options:
             model: ${GEMINI_MODEL}
             temperature: ${GEMINI_TEMPERATURE} # 사실 기반 요약을 위해 창의성을 낮춤
-
+  retry:
+    max-attempts: 1 # 최대 재시도 횟수
 
 finnhub:
   api-key: ${FINNHUB_API_KEY}

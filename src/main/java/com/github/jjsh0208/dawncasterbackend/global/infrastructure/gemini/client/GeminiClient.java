@@ -39,7 +39,7 @@ public class GeminiClient {
                 .build();
 
         ChatOptions chatOptions = ChatOptions.builder()
-                .maxTokens(3000)
+                .maxTokens(8192)
                 .build();
 
         Prompt prompt =Prompt.builder()
