@@ -13,6 +13,7 @@ import com.github.jjsh0208.dawncasterbackend.global.infrastructure.gemini.dto.Ai
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,6 +96,14 @@ public class AiAnalysisService {
 
         aiAnalysisRepository.save(analysis);
         log.info("[AI Analysis] 한국 증시 영향 분석 완료 및 DB 저장 성공 (메일 제목: {})", dto.getEmail_subject());
+    }
+
+
+    @Transactional(readOnly = true)
+    public AiAnalysis getTodayAnalysisByCategoryId(Long categoryId) {
+        LocalDate today = LocalDate.now();
+        return aiAnalysisRepository.findByCategoryIdAndAnalysisDateWithImpacts(categoryId, today)
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리의 오늘 분석 데이터가 존재하지 않습니다. 카테고리 ID: " + categoryId));
     }
 
     private String formatNewsForAi(List<News> newsList) {
