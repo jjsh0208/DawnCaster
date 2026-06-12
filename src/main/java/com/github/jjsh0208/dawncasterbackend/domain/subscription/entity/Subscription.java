@@ -5,6 +5,7 @@ import com.github.jjsh0208.dawncasterbackend.domain.users.entity.User;
 import com.github.jjsh0208.dawncasterbackend.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +29,11 @@ public class Subscription extends BaseTimeEntity {
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
+
+    @Builder
+    public Subscription(User user, Category category, boolean isActive){
+        this.user = user;
+        this.category =category;
+        this.isActive = isActive;
+    }
 }
