@@ -28,6 +28,20 @@ spring:
       max-attempts: 1 # 최대 재시도 횟수
       on-client-errors: false
 
+  mail:
+    host: smtp.gmail.com
+    port: ${HOST_PORT}
+    username: ${HOST_MAIL}
+    password: ${HOST_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true # TLS 암호화 사용 (필수)
+          timeout: 5000 # 타임아웃 설정 (밀리초)
+
+
 finnhub:
   api-key: ${FINNHUB_API_KEY}
   base-url: https://finnhub.io/api/v1
