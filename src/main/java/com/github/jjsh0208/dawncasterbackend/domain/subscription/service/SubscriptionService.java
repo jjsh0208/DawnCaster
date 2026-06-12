@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,23 +26,28 @@ public class SubscriptionService {
         // 1. 사용자 조회 또는 생성
         User user = userService.findOrCreateUser(email);
 
-        // 2. 카테고리 ID 목록을 기반으로 구독 정보 생성
+        // 2. 이미 구독 중인 카테고리 ID 목록을 DB에서 한 번에 조회 (단 1번의 SELECT)
+        List<Long> existingCategoryIds = subscriptionRepository.findExistingCategoryIds(user, categoryIds);
+
+        // 3. 새로 저장할 구독 엔티티를 모을 리스트 생성
+        List<Subscription> newSubscriptions = new ArrayList<>();
+
+        // 4. 반복문에서는 DB 조회 없이 메모리에서 중복 필터링
         for (Long categoryId : categoryIds) {
-            // 엔티티 조회를 생략하고 프록시 객체만 가져와 쿼리 최적화 (JPA getReferenceById)
-            Category categoryRef = categoryRepository.getReferenceById(categoryId);
+            if (!existingCategoryIds.contains(categoryId)) {
+                Category categoryRef = categoryRepository.getReferenceById(categoryId);
 
-            // 중복 구독 방지 로직 (예: 이미 해당 user와 category로 활성화된 구독이 있는지 확인)
-            boolean alreadySubscribed = subscriptionRepository.existsByUserAndCategory(user, categoryRef);
-
-            if (!alreadySubscribed) {
-                Subscription subscription = Subscription.builder()
+                newSubscriptions.add(Subscription.builder()
                         .user(user)
                         .category(categoryRef)
                         .isActive(true)
-                        .build();
-
-                subscriptionRepository.save(subscription);
+                        .build());
             }
+        }
+
+        // 5. 모아둔 엔티티들을 한 번에 저장 (saveAll)
+        if (!newSubscriptions.isEmpty()) {
+            subscriptionRepository.saveAll(newSubscriptions);
         }
     }
 }
