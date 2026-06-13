@@ -23,25 +23,32 @@ public class SubscriptionService {
 
     @Transactional
     public void subscribeCategories(String email, List<Long> categoryIds) {
+
+        List<Category> validCategories = categoryRepository.findAllById(categoryIds);
+        if (validCategories.size() != categoryIds.size()) {
+            throw new IllegalArgumentException("요청한 카테고리 중 존재하지 않는 카테고리가 포함되어 있습니다.");
+        }
+
         // 1. 사용자 조회 또는 생성
         User user = userService.findOrCreateUser(email);
-
         // 2. 이미 구독 중인 카테고리 ID 목록을 DB에서 한 번에 조회 (단 1번의 SELECT)
         List<Long> existingCategoryIds = subscriptionRepository.findExistingCategoryIds(user, categoryIds);
-
         // 3. 새로 저장할 구독 엔티티를 모을 리스트 생성
         List<Subscription> newSubscriptions = new ArrayList<>();
 
         // 4. 반복문에서는 DB 조회 없이 메모리에서 중복 필터링
-        for (Long categoryId : categoryIds) {
-            if (!existingCategoryIds.contains(categoryId)) {
-                Category categoryRef = categoryRepository.getReferenceById(categoryId);
+        for (Category category : validCategories) {
+            if (!existingCategoryIds.contains(category.getId())) {
 
-                newSubscriptions.add(Subscription.builder()
+                // 3. 엔티티 생성
+                Subscription newSubscription = Subscription.builder()
                         .user(user)
-                        .category(categoryRef)
+                        .category(category)
                         .isActive(true)
-                        .build());
+                        .build();
+
+                user.addSubscription(newSubscription);
+                newSubscriptions.add(newSubscription);
             }
         }
 
