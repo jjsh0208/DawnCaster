@@ -14,5 +14,19 @@ services:
     volumes:
       - dawncaster_data:/var/lib/mysql
 
+  dawncaster-redis-stack:
+    image: redis/redis-stack
+    container_name: redis-stack-compose
+    restart: always
+    environment:
+      # command 오버라이딩 대신 환경변수로 Redis 서버 옵션 전달
+      REDIS_ARGS: "--requirepass ${REDIS_PASSWORD} --notify-keyspace-events Ex"
+    ports:
+      - "6379:6379"
+      - "8001:8001" # RedisInsight UI 접속용 포트
+    volumes:
+      - dawncaster_redis_data:/data
+
 volumes:
   dawncaster_data:
+  dawncaster_redis_data:
