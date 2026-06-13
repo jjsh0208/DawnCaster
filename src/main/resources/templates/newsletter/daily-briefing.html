@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${mailTitle}">오늘의 브리핑</title>
+    <style type="text/css">
+        body { margin: 0; padding: 0; width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; background-color: #f3f4f6; }
+        table { border-collapse: collapse; }
+        img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+        a { text-decoration: none; }
+        .container { background-color: #ffffff; width: 100%; max-width: 640px; margin: 0 auto; }
+
+        /* Mobile 최적화 */
+        @media only screen and (max-width: 640px) {
+            .container { width: 100% !important; border-radius: 0 !important; }
+            .px { padding-left: 20px !important; padding-right: 20px !important; }
+        }
+    </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6;">
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; font-size:1px; line-height:1px; color:#f3f4f6;" th:text="${preheader}">
+    프리헤더 내용
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6; padding: 40px 0;">
+    <tr>
+        <td align="center" style="padding: 20px 10px;">
+            <table role="presentation" class="container" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+
+                <tr>
+                    <td class="px" style="padding: 40px 40px 20px 40px; border-bottom: 1px solid #e5e7eb;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td align="left" style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 24px; font-weight: bold; color: #111827;">
+                                    DawnCaster <span style="color: #2563eb;">브리핑</span>
+                                </td>
+                                <td align="right" style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 13px; color: #6b7280;" th:text="${publishDate}">
+                                    2026년 06월 12일
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <th:block th:each="analysis : ${analyses}">
+
+                    <tr>
+                        <td class="px" style="padding: 30px 40px 10px 40px;">
+                            <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 12px; font-weight: bold; color: #2563eb; margin-bottom: 8px;" th:text="${analysis.categoryName} + ' 주요 이슈'">
+                                카테고리명 주요 이슈
+                            </div>
+                            <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 22px; line-height: 1.4; font-weight: bold; color: #111827; margin-bottom: 16px;" th:text="${analysis.headline}">
+                                메인 뉴스 제목
+                            </div>
+                            <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 15px; line-height: 1.6; color: #4b5563; padding-left: 12px; border-left: 3px solid #e5e7eb;" th:text="${analysis.summary}">
+                                메인 뉴스 요약
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="px" style="padding: 20px 40px 10px 40px;">
+                            <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 18px; font-weight: bold; color: #111827;">
+                                섹터별 영향 분석
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:each="impact : ${analysis.impacts}">
+                        <td class="px" style="padding: 10px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9fafb; border-radius: 6px; border: 1px solid #f3f4f6;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 12px;">
+                                            <tr>
+                                                <td align="left" style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 16px; font-weight: bold; color: #111827;" th:text="${impact.name}">
+                                                    하위 섹터명
+                                                </td>
+                                                <td align="right">
+                            <span th:style="|background-color:${impact.colorCode}; border-radius: 4px; padding: 4px 8px; font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; font-size: 12px; font-weight: bold; color: #ffffff;|" th:text="${impact.statusText}">
+                              상태
+                            </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 14px; line-height: 1.6; color: #4b5563; margin-bottom: 12px;" th:text="${impact.analysis}">
+                                            분석 내용
+                                        </div>
+                                        <div style="font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 13px; color: #6b7280; padding-top: 12px; border-top: 1px dashed #e5e7eb;">
+                                            <strong style="color: #374151;">연관 종목:</strong> <span th:text="${impact.relatedStocks}">종목들</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td height="20"></td>
+                    </tr>
+                </th:block>
+                <tr>
+                    <td class="px" style="padding: 40px; background-color: #ffffff; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                        <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; text-align: center; font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; font-size: 12px; color: #9ca3af; line-height: 1.5;">
+                            본 리포트는 AI 기반으로 생성되었으며, 투자 판단의 참고 자료로만 활용하시기 바랍니다.<br>
+                            © 2026 DawnCaster. All rights reserved.
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
