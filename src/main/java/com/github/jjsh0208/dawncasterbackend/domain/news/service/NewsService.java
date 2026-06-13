@@ -6,9 +6,10 @@ import com.github.jjsh0208.dawncasterbackend.domain.news.entity.News;
 import com.github.jjsh0208.dawncasterbackend.domain.news.repository.NewsRepository;
 import com.github.jjsh0208.dawncasterbackend.global.infrastructure.finnhub.client.FinnhubClient;
 import com.github.jjsh0208.dawncasterbackend.global.infrastructure.finnhub.dto.FinnhubNewsResponse;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
