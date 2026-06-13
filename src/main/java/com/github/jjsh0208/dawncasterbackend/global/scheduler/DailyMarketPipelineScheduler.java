@@ -1,5 +1,6 @@
 package com.github.jjsh0208.dawncasterbackend.global.scheduler;
 
+import com.github.jjsh0208.dawncasterbackend.domain.ai.service.AiAnalysisCacheService;
 import com.github.jjsh0208.dawncasterbackend.domain.ai.service.AiAnalysisService;
 import com.github.jjsh0208.dawncasterbackend.domain.news.service.NewsService;
 import com.github.jjsh0208.dawncasterbackend.domain.stock.service.StockService;
@@ -16,6 +17,7 @@ public class DailyMarketPipelineScheduler {
     private final NewsService newsService;
     private final StockService stockService;
     private final AiAnalysisService aiAnalysisService;
+    private final AiAnalysisCacheService aiAnalysisCacheService;
 
     /**
      * 일일 시장 데이터 파이프라인 가동
@@ -35,6 +37,7 @@ public class DailyMarketPipelineScheduler {
 
             log.info(">> Step 3. AI 뉴스 데이터 요약 분석 시작");
             aiAnalysisService.generateDailyKoreanMarketAnalysis();
+            aiAnalysisCacheService.warmUpTodayAnalysisCache();
             log.info(">> Step 3. AI 뉴스 데이터 요약 분석 완료");
 
             // 3단계: 구독자 메일 발송 (예정)
