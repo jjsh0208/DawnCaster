@@ -5,6 +5,7 @@ import java.util.List;
 // 캐싱용 DTO
 public record AiAnalysisCacheDto(
         Long categoryId,
+        String categoryName,
         String issueTitle,
         String summary,
         List<ImpactCacheDto> impacts

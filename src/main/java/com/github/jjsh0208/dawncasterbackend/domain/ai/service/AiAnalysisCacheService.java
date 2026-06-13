@@ -3,6 +3,8 @@ package com.github.jjsh0208.dawncasterbackend.domain.ai.service;
 import com.github.jjsh0208.dawncasterbackend.domain.ai.dto.AiAnalysisCacheDto;
 import com.github.jjsh0208.dawncasterbackend.domain.ai.entity.AiAnalysis;
 import com.github.jjsh0208.dawncasterbackend.domain.ai.repository.AiAnalysisRepository;
+import com.github.jjsh0208.dawncasterbackend.domain.category.entity.Category;
+import com.github.jjsh0208.dawncasterbackend.domain.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,6 +24,7 @@ public class AiAnalysisCacheService {
 
     private final AiAnalysisRepository aiAnalysisRepository;
     private final RedisCacheManager cacheManager;
+    private final CategoryRepository categoryRepository;
 
     private static final String CACHE_NAME = "dailyAiAnalysis";
 
@@ -34,6 +38,10 @@ public class AiAnalysisCacheService {
             return;
         }
 
+        // 카테고리 전체를 조회하여 ID-이름 매핑 맵 생성 (In-Memory Join 준비)
+        Map<Long, String> categoryNameMap = categoryRepository.findAll().stream()
+                .collect(Collectors.toMap(Category::getId, Category::getName));
+
         Cache cache = cacheManager.getCache(CACHE_NAME);
         if (cache == null) {
             log.error("Redis Cache [{}]를 찾을 수 없습니다. CacheConfig 설정을 확인하세요.", CACHE_NAME);
@@ -45,7 +53,8 @@ public class AiAnalysisCacheService {
 
         // 2. 엔티티 -> DTO 변환 후 Redis에 적재 (Key: CategoryId)
         for (AiAnalysis analysis : todayAnalyses) {
-            AiAnalysisCacheDto dto = convertToDto(analysis);
+            String categoryName = categoryNameMap.getOrDefault(analysis.getCategoryId(), "미분류");
+            AiAnalysisCacheDto dto = convertToDto(analysis,categoryName);
             cache.put(analysis.getCategoryId(), dto);
         }
 
@@ -53,7 +62,7 @@ public class AiAnalysisCacheService {
     }
 
     // 엔티티를 안전한 DTO로 매핑하는 내부 헬퍼 메서드
-    private AiAnalysisCacheDto convertToDto(AiAnalysis analysis) {
+    private AiAnalysisCacheDto convertToDto(AiAnalysis analysis, String categoryName) {
         List<AiAnalysisCacheDto.ImpactCacheDto> impactDtos = analysis.getImpacts().stream()
                 .map(impact -> new AiAnalysisCacheDto.ImpactCacheDto(
                         impact.getSectorName(),
@@ -65,6 +74,7 @@ public class AiAnalysisCacheService {
 
         return new AiAnalysisCacheDto(
                 analysis.getCategoryId(),
+                categoryName,
                 analysis.getIssueTitle(),
                 analysis.getSummary(),
                 impactDtos
