@@ -20,8 +20,7 @@ public class RedisCacheConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofHours(24)) // 12시간 TTL 설정
-                // Key는 String, Value는 JSON으로 직렬화 (AiAnalysisCacheDto 저장을 위함)
+                .entryTtl(Duration.ofHours(24)) // 24시간 TTL 설정
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
