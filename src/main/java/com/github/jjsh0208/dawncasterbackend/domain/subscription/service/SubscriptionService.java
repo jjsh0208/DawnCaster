@@ -24,6 +24,10 @@ public class SubscriptionService {
     @Transactional
     public void subscribeCategories(String email, List<Long> categoryIds) {
 
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            throw new IllegalArgumentException("구독할 카테고리를 최소 1개 이상 선택해야 합니다.");
+        }
+
         List<Category> validCategories = categoryRepository.findAllById(categoryIds);
         if (validCategories.size() != categoryIds.size()) {
             throw new IllegalArgumentException("요청한 카테고리 중 존재하지 않는 카테고리가 포함되어 있습니다.");
