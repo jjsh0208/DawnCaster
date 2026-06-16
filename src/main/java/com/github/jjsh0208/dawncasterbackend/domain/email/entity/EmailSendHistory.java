@@ -1,10 +1,12 @@
 package com.github.jjsh0208.dawncasterbackend.domain.email.entity;
 
+import com.github.jjsh0208.dawncasterbackend.domain.category.entity.Category;
 import com.github.jjsh0208.dawncasterbackend.domain.email.enums.SendStatus;
 import com.github.jjsh0208.dawncasterbackend.domain.users.entity.User;
 import com.github.jjsh0208.dawncasterbackend.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,4 +39,12 @@ public class EmailSendHistory extends BaseTimeEntity {
 
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
+
+    @Builder
+    public EmailSendHistory(User user, LocalDate sendDate, SendStatus sendStatus, String failReason){
+        this.user = user;
+        this.sendDate = sendDate;
+        this.sendStatus = sendStatus;
+        this.failReason = failReason;
+    }
 }
