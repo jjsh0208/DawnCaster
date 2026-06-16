@@ -1,7 +1,6 @@
-package com.github.jjsh0208.dawncasterbackend.domain.ai.service;
+package com.github.jjsh0208.dawncasterbackend.domain.email.service;
 
 import com.github.jjsh0208.dawncasterbackend.domain.ai.dto.AiAnalysisCacheDto;
-import com.github.jjsh0208.dawncasterbackend.domain.email.service.NewsletterMailService;
 import com.github.jjsh0208.dawncasterbackend.domain.users.entity.User;
 import com.github.jjsh0208.dawncasterbackend.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

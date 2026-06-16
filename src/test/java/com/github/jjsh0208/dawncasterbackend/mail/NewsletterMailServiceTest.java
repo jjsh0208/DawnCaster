@@ -1,7 +1,7 @@
 package com.github.jjsh0208.dawncasterbackend.mail;
 
 import com.github.jjsh0208.dawncasterbackend.domain.ai.service.AiAnalysisCacheService;
-import com.github.jjsh0208.dawncasterbackend.domain.ai.service.NewsletterBatchService;
+import com.github.jjsh0208.dawncasterbackend.domain.email.service.NewsletterBatchService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
