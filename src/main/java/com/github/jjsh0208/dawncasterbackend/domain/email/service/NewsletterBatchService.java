@@ -64,7 +64,7 @@ public class NewsletterBatchService {
                 String htmlContent = renderHtmlTemplate(context); // 데이터 조립이 끝난 Context로 HTML 렌더링
 
                 // 3. 메일 발송 위임
-                dispatchUserMail(user.getEmail(), htmlContent); // 이메일 발송
+                dispatchUserMail(user, htmlContent); // 이메일 발송
             }
 
             pageNumber++;
@@ -127,7 +127,7 @@ public class NewsletterBatchService {
     }
 
     // 4. 이메일 발송 컴포넌트
-    private void dispatchUserMail(String toEmail, String htmlContent) {
-        newsletterMailService.sendAsync(toEmail, "[DawnCaster] 오늘의 브리핑", htmlContent);
+    private void dispatchUserMail(User user, String htmlContent) {
+        newsletterMailService.sendAsync(user, "[DawnCaster] 오늘의 브리핑", htmlContent);
     }
 }
