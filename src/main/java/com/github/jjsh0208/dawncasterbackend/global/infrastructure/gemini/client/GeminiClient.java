@@ -11,6 +11,8 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -23,6 +25,14 @@ public class GeminiClient {
     private final PromptGeneratorService promptGeneratorService;
     private final ObjectMapper objectMapper;
 
+    // RuntimeException 발생 시 재시도를 수행
+    // 2초 대기 후 재시도하며, 실패 시 대기 시간을 2배씩 늘림 (2초 -> 4초)
+    @Retryable(
+            retryFor = {RuntimeException.class},
+            maxAttempts = 3,
+
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public AiAnalysisResultDto summarizeSectorNews(String crawledNewsText){
 
         String systemPrompt = promptGeneratorService.getSystemPrompt();
