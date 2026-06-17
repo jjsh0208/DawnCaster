@@ -47,4 +47,14 @@ public class EmailSendHistory extends BaseTimeEntity {
         this.sendStatus = sendStatus;
         this.failReason = failReason;
     }
+
+    public void markAsSuccess() {
+        this.sendStatus = SendStatus.SUCCESS;
+        this.failReason = null;
+    }
+
+    public void updateFailReason(String failReason) {
+        this.failReason = failReason != null && failReason.length() > 490
+                ? failReason.substring(0, 490) : failReason;
+    }
 }
