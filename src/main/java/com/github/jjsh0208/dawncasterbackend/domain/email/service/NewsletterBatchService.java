@@ -53,18 +53,12 @@ public class NewsletterBatchService {
             userPage = userRepository.findAllByIsDeletedFalse(pageable); // 구독자를 천명 단위로 처리
 
             for (User user : userPage.getContent()) {
-                List<Long> categoryIds = user.getSubscribedCategoryIds(); // 해당 유저가 구독중인 카테고리 추출
-                if (categoryIds.isEmpty()) continue;
+                String htmlContent = generateHtmlForUser(user, cache, publishDateStr);
 
-                // 1. 컨텍스트 조립
-                Context context = buildMailContext(categoryIds, cache, publishDateStr); // 이메일에 삽입할 데이터 조립
-                if (context == null) continue; // 유효한 데이터가 없을 경우 스킵
-
-                // 2. HTML 렌더링
-                String htmlContent = renderHtmlTemplate(context); // 데이터 조립이 끝난 Context로 HTML 렌더링
-
-                // 3. 메일 발송 위임
-                dispatchUserMail(user, htmlContent); // 이메일 발송
+                if (htmlContent != null) {
+                    // 메일 발송 위임
+                    dispatchUserMail(user, htmlContent);
+                }
             }
 
             pageNumber++;
@@ -72,6 +66,26 @@ public class NewsletterBatchService {
 
         log.info("전체 구독자 대상 뉴스레터 발송 파이프라인 완료. (총 {} 페이지 처리)", pageNumber);
     }
+
+
+    // 2. 외부 스케줄러(재발송) 및 내부 배치에서 공통으로 사용할 HTML 생성 메서드
+    public String generateHtmlForUser(User user, Cache cache, String publishDateStr) {
+        // 2-1. 해당 유저가 구독중인 카테고리 추출
+        List<Long> categoryIds = user.getSubscribedCategoryIds();
+        if (categoryIds.isEmpty()) {
+            return null;
+        }
+
+        // 2-2. 컨텍스트 조립
+        Context context = buildMailContext(categoryIds, cache, publishDateStr);
+        if (context == null) {
+            return null;
+        }
+
+        // 2-3. 완성된 Context로 HTML 렌더링 후 반환
+        return renderHtmlTemplate(context);
+    }
+
 
     // 2. 데이터 가공 및 Thymeleaf Context 조립 로직
     private Context buildMailContext(List<Long> categoryIds, Cache cache, String publishDateStr) {
@@ -128,6 +142,6 @@ public class NewsletterBatchService {
 
     // 4. 이메일 발송 컴포넌트
     private void dispatchUserMail(User user, String htmlContent) {
-        newsletterMailService.sendAsync(user, "[DawnCaster] 오늘의 브리핑", htmlContent);
+        newsletterMailService.sendInitialAsync(user, "[DawnCaster] 오늘의 브리핑", htmlContent);
     }
 }
